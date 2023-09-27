@@ -15,38 +15,70 @@ let fields = [
 ];
 
 function render() {
-    // Erzeugen Sie eine HTML-Tabelle
-    const table = document.createElement('table');
+    const contentDiv = document.getElementById('content');
 
-    // Schleife durch die Spielfelder
+    // Generate table HTML
+    let tableHtml = '<table>';
     for (let i = 0; i < 3; i++) {
-        const row = document.createElement('tr');
+        tableHtml += '<tr>';
         for (let j = 0; j < 3; j++) {
-            const cell = document.createElement('td');
-            const fieldIndex = i * 3 + j;
-
-            // Setzen Sie den Inhalt der Zelle basierend auf dem Wert im Feld-Array
-            if (fields[fieldIndex] === 'circle') {
-                cell.textContent = 'O';
-            } else if (fields[fieldIndex] === 'cross') {
-                cell.textContent = 'X';
+            const index = i * 3 + j;
+            let symbol = '';
+            if (fields[index] === 'circle') {
+                symbol = generateCircleSVG();
+            } else if (fields[index] === 'cross') {
+                symbol = generateCrossSVG();
             }
-
-            // Fügen Sie die Zelle zur Zeile hinzu
-            row.appendChild(cell);
+            tableHtml += `<td>${symbol}</td>`;
         }
-        // Fügen Sie die Zeile zur Tabelle hinzu
-        table.appendChild(row);
+        tableHtml += '</tr>';
     }
+    tableHtml += '</table>';
 
-    // Löschen Sie den vorherigen Inhalt des contentContainers
-    contentContainer.innerHTML = '';
-
-    // Fügen Sie die Tabelle zum contentContainer hinzu
-    contentContainer.appendChild(table);
+    // Set table HTML to contentDiv
+    contentDiv.innerHTML = tableHtml;
 }
 
 function init() {
     render();
 }
+
+function generateCircleSVG() {
+    const color = '#00B0EF';
+    const width = 70;
+    const height = 70;
+    const fillColor = '#00B0EF';
+    return `<svg width="${width}" height="${height}">
+              <circle cx="35" cy="35" r="30" stroke="${color}" stroke-width="5" fill="none">
+                <animate attributeName="stroke-dasharray" from="0 188.5" to="188.5 0" dur="0.5s" fill="freeze" />
+              </circle>
+            </svg>`;
+}
+
+function generateCrossSVG() {
+    const color = '#FFC000';
+    const width = 70;
+    const height = 70;
+
+    const svgHtml = `
+      <svg width="${width}" height="${height}">
+        <line x1="0" y1="0" x2="${width}" y2="${height}"
+          stroke="${color}" stroke-width="10">
+          <animate attributeName="x2" values="0; ${width}" dur="500ms" />
+          <animate attributeName="y2" values="0; ${height}" dur="500ms" />
+        </line>
+        <line x1="${width}" y1="0" x2="0" y2="${height}"
+          stroke="${color}" stroke-width="10">
+          <animate attributeName="x2" values="${width}; 0" dur="500ms" />
+          <animate attributeName="y2" values="0; ${height}" dur="500ms" />
+        </line>
+      </svg>
+    `;
+
+    return svgHtml;
+}
+
+
+
+
 
